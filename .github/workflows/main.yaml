@@ -1,0 +1,83 @@
+name: NosoData-Go
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: write
+
+on:
+
+  push:
+    branches: [ main ]
+    tags: [ "*" ]
+    paths-ignore: [ "README.md", "LICENSE", "CHANGELOG.md", "cliff.toml" ]
+
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  test:
+    name: Test
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: true
+      matrix:
+          os: [ ubuntu-latest, windows-latest, macos-latest]
+          go: [ "stable", "1.23", "1.24" ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Go Mod Tidy
+        run: go mod tidy
+
+      - name: Run tests
+        run: go test -v -run '$Test' '${{ github.repository }}'
+
+
+  release:
+    if: contains(github.ref_type, 'tag')
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Generate Release Notes
+        id: git-cliff
+        uses: orhun/git-cliff-action@main
+        with:
+          config: cliff.toml
+          args: --latest --strip header --no-exec --github-repo ${{ github.repository }}
+        env:
+          OUTPUT: RELEASE.md
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: NosoGo ${{ github.ref_name }}
+          body: ${{ steps.git-cliff.outputs.content }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -92,6 +92,7 @@ func (p *PascalShortString) SetString(s string) error {
 
 // GetString returns the actual string part (up to the length byte)
 func (p *PascalShortString) GetString() string {
+	// return string(p.data)
 	return string(p.data[1 : 1+int(p.length)])
 }
 

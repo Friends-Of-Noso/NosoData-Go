@@ -2,25 +2,27 @@ package legacy
 
 import (
 	"encoding/binary"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 )
 
 type LegacyTransaction struct {
-	Block           int32
-	OrderID         PascalShortString // Capacity 64
-	OrderLinesCount int32
-	OrderType       PascalShortString // Capacity 6
-	TimeStamp       int64
-	Reference       PascalShortString // Capacity 64
-	TransferIndex   int32
-	Sender          PascalShortString // Capacity 120
-	Address         PascalShortString // Capacity 40
-	Receiver        PascalShortString // Capacity 40
-	AmountFee       int64
-	AmountTransfer  int64
-	Signature       PascalShortString // Capacity 120
-	TransferID      PascalShortString // Capacity 64
+	Block           int32             `json:"block"`          //
+	OrderID         PascalShortString `json:"order-id"`       // Capacity 64
+	OrderLinesCount int32             `json:"orders-count"`   //
+	OrderType       PascalShortString `json:"order-type"`     // Capacity 6
+	TransferID      PascalShortString `json:"id"`             // Capacity 64
+	TimeStamp       int64             `json:"timestamp"`      //
+	Reference       PascalShortString `json:"reference"`      // Capacity 64
+	TransferIndex   int32             `json:"transfer-index"` //
+	Sender          PascalShortString `json:"sender"`         // Capacity 120
+	Address         PascalShortString `json:"address"`        // Capacity 40
+	Receiver        PascalShortString `json:"receiver"`       // Capacity 40
+	AmountFee       int64             `json:"fee"`            //
+	AmountTransfer  int64             `json:"amount"`         //
+	Signature       PascalShortString `json:"signature"`      // Capacity 120
 }
 
 // ReadFromStream reads a transaction from a stream
@@ -123,4 +125,13 @@ func (t *LegacyTransaction) ReadFromStream(r io.Reader) error {
 	}
 
 	return nil
+}
+
+func (t *LegacyTransaction) AsJSON() string {
+	jsonData, err := json.MarshalIndent(t, "", "  ")
+	if err != nil {
+		fmt.Printf("error %v", err)
+		return ""
+	}
+	return string(jsonData)
 }

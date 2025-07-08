@@ -182,8 +182,7 @@ func (b *LegacyBlock) ReadFromStream(f *os.File) error {
 	// Read transactions
 	if b.TransactionsCount > 0 {
 		b.Transactions = make([]LegacyTransaction, b.TransactionsCount)
-		var n int32
-		for n = 0; n < b.TransactionsCount; n++ {
+		for n := range b.TransactionsCount {
 			b.Transactions[n].ReadFromStream(f)
 		}
 	}
@@ -208,8 +207,7 @@ func (b *LegacyBlock) ReadFromStream(f *os.File) error {
 		// Field ProofOfStakeRewardAddresses
 		if b.ProofOfStakeRewardCount > 0 {
 			b.ProofOfStakeRewardAddresses = make([]PascalShortString, b.ProofOfStakeRewardCount)
-			var n int32
-			for n = 0; n < b.ProofOfStakeRewardCount; n++ {
+			for n := range b.ProofOfStakeRewardCount {
 				b.ProofOfStakeRewardAddresses[n] = *NewPascalShortString(32)
 				err := b.ProofOfStakeRewardAddresses[n].ReadFromStream(f)
 				if err != nil {
@@ -237,8 +235,7 @@ func (b *LegacyBlock) ReadFromStream(f *os.File) error {
 		// Field ProofOfStakeRewardAddresses
 		if b.MasterNodeRewardCount > 0 {
 			b.MasterNodeRewardAddresses = make([]PascalShortString, b.MasterNodeRewardCount)
-			var n int32
-			for n = 0; n < b.MasterNodeRewardCount; n++ {
+			for n := range b.MasterNodeRewardCount {
 				b.MasterNodeRewardAddresses[n] = *NewPascalShortString(32)
 				err := b.MasterNodeRewardAddresses[n].ReadFromStream(f)
 				if err != nil {
