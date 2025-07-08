@@ -40,8 +40,8 @@ jobs:
         with:
           go-version: ${{ matrix.go }}
 
-      - name: Go Mod Tidy
-        run: go mod tidy
+#      - name: Go Mod Tidy
+#        run: go mod tidy
 
       - name: Run tests
         run: go test -v -run '$Test' '${{ github.repository }}'
