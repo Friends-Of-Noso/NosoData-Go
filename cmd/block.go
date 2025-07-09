@@ -1,6 +1,3 @@
-/*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -25,7 +22,7 @@ var (
 	// blockCmd represents the block command
 	blockCmd = &cobra.Command{
 		Use:   "block [flags] <BLOCK NUMBER>",
-		Short: "Outputs the block in JSON",
+		Short: "Outputs the block in text or JSON",
 		Args:  cobra.MinimumNArgs(1),
 		// 	Long: `A longer description that spans multiple lines and likely contains examples
 		// and usage of using your command. For example:
@@ -33,10 +30,10 @@ var (
 		// Cobra is a CLI library for Go that empowers applications.
 		// This application is a tool to generate the needed files
 		// to quickly create a Cobra application.`,
-		Example: `  # Display block 100000
+		Example: `  # Display block 100000 in text format
   $ nosodata block --test-data <path to folder containing "100000.blk"> 100000
 
-  # Display same block in JSON
+  # Display same block in JSON format
   $ nosodata block --json --test-data <path to folder containing "100000.blk"> 100000`,
 		Run: runBlock,
 	}
@@ -73,10 +70,10 @@ func runBlock(cmd *cobra.Command, args []string) {
 		fmt.Printf("%v\n", err)
 		os.Exit(1)
 	}
-	displayBlock(block, json)
+	displayBlock(json)
 }
 
-func displayBlock(block legacy.LegacyBlock, jsonOutput bool) {
+func displayBlock(jsonOutput bool) {
 	buf := new(bytes.Buffer)
 
 	options := m.ReaderOptions{}
@@ -164,5 +161,4 @@ func displayBlock(block legacy.LegacyBlock, jsonOutput bool) {
 		fmt.Printf("%v\n", err)
 		os.Exit(1)
 	}
-
 }
