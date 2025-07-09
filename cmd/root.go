@@ -13,7 +13,7 @@ var (
 	json     bool
 	rootCmd  = &cobra.Command{
 		Use:     "nosodata",
-		Version: "0.0.9",
+		Version: "0.0.10",
 		Short:   "A tool to inspect Noso's blockchain files",
 		// 		Long: `A longer description that spans multiple lines and likely contains
 		// examples and usage of using your application. For example:
