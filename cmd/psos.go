@@ -15,55 +15,55 @@ import (
 )
 
 var (
-	gvts legacy.LegacyGVT
+	pso legacy.LegacyPSO
 
-	// gvtsCmd represents the gvts command
-	gvtsCmd = &cobra.Command{
-		Use:   "gvts",
-		Short: "Outputs the gvts in text or JSON",
+	// psosCmd represents the psos command
+	psosCmd = &cobra.Command{
+		Use:   "psos",
+		Short: "Outputs the psos in text or JSON",
 		// 	Long: `A longer description that spans multiple lines and likely contains examples
 		// and usage of using your command. For example:
 
 		// Cobra is a CLI library for Go that empowers applications.
 		// This application is a tool to generate the needed files
 		// to quickly create a Cobra application.`,
-		Example: `  # Display gvts in text format
-  $ nosodata gvts --test-data <path to folder containing "gvts.psk">
+		Example: `  # Display psos in text format
+  $ nosodata psos --test-data <path to folder containing "psos.dat">
 
-  # Display gvts in JSON format
-  $ nosodata gvts --json --test-data <path to folder containing "gvts.psk">`,
-		Run: runGVTS,
+  # Display psos in JSON format
+  $ nosodata psos --json --test-data <path to folder containing "psos.dat">`,
+		Run: runPSOS,
 	}
 )
 
 func init() {
-	rootCmd.AddCommand(gvtsCmd)
+	rootCmd.AddCommand(psosCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// gvtsCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// psoCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// gvtsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// psoCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func runGVTS(cmd *cobra.Command, args []string) {
-	gvtsFile := filepath.Join(
+func runPSOS(cmd *cobra.Command, args []string) {
+	psoFile := filepath.Join(
 		testdata,
-		"gvts.psk",
+		"psos.dat",
 	)
 
-	if err := gvts.ReadFromFile(gvtsFile); err != nil {
+	if err := pso.ReadFromFile(psoFile); err != nil {
 		fmt.Printf("%v\n", err)
 		os.Exit(1)
 	}
-	displayGVTS(json)
+	displayPSO(json)
 }
 
-func displayGVTS(jsonOutput bool) {
+func displayPSO(jsonOutput bool) {
 	buf := new(bytes.Buffer)
 
 	options := m.ReaderOptions{}
@@ -71,20 +71,21 @@ func displayGVTS(jsonOutput bool) {
 	if jsonOutput {
 		options.ShouldFormat = true
 		options.Style = styles.Get("native")
-		fmt.Fprintln(buf, gvts.AsJSON())
+		fmt.Fprintln(buf, pso.AsJSON())
 	} else {
 		options.ShouldFormat = false
-		for i, e := range gvts.Entries {
-			fmt.Fprintln(buf, "Position:", i)
-			fmt.Fprintf(buf, "    Number:  '%s'\n", e.Number.GetString())
-			fmt.Fprintf(buf, "    Owner:   '%s'\n", e.Owner.GetString())
-			fmt.Fprintf(buf, "    Hash:    '%s'\n", e.Hash.GetString())
-			fmt.Fprintln(buf, "    Control:", e.Control)
+		fmt.Fprintln(buf, "Block:", pso.Block)
+		fmt.Fprintf(buf, "  MN Locks(%d):\n", pso.MNLockCount)
+		for i, mli := range pso.MNLocks {
+			fmt.Fprintln(buf, "  Position:", i)
+			fmt.Fprintf(buf, "      Address: '%s'\n", mli.Address.GetString())
+			fmt.Fprintln(buf, "       Expire:", mli.Expire, "seconds")
 		}
+		fmt.Fprintf(buf, "  PSO Count(%d):\n", pso.PSOCount)
 	}
 
 	reader, err := m.NewReaderFromStream(
-		"GVTS",
+		"PSO",
 		buf,
 		formatters.TTY,
 		options,
