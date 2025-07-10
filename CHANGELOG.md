@@ -2,16 +2,6 @@
 
 Notable changes up to the last release.
 
-## [unreleased]
-
-### ⚙️ Miscellaneous Tasks
-
-- Bumped version for next release - ([fb6a186](https://github.com/Friends-Of-Noso/NosoData-Go/commit/fb6a186fb9755f61c96b44b06ff58c1221aec891))
-
-## Contributors
-
-* [@gcarreno](https://github.com/gcarreno)
-
 ## [0.0.9](https://github.com/Friends-Of-Noso/NosoData-Go/compare/v0.0.8..v0.0.9) - 2025-07-09
 
 ### ⛰️  Features
@@ -35,7 +25,6 @@ Notable changes up to the last release.
 ## Contributors
 
 * [@gcarreno](https://github.com/gcarreno)
-
 ## New Contributors ❤️
 
 * [@pasichDev](https://github.com/pasichDev) made their first contribution
@@ -80,7 +69,6 @@ Notable changes up to the last release.
 
 - Adding a `main.go` for testing purposes - ([06e80ed](https://github.com/Friends-Of-Noso/NosoData-Go/commit/06e80ed1cd51ef72f47d8478a8244faa440686d3))
 - Initial commit - ([03fb6f2](https://github.com/Friends-Of-Noso/NosoData-Go/commit/03fb6f2bc1e85ff6ac09d8e53b1b9d33da27528f))
-
 
 ## New Contributors ❤️
 
