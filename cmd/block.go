@@ -10,10 +10,8 @@ import (
 
 	"github.com/Friends-Of-Noso/NosoData-Go/legacy"
 	"github.com/Friends-Of-Noso/NosoData-Go/utils"
-	"github.com/alecthomas/chroma/v2/formatters"
-	"github.com/alecthomas/chroma/v2/styles"
 	"github.com/spf13/cobra"
-	"github.com/walles/moar/m"
+	"github.com/walles/moor/v2/pkg/moor"
 )
 
 var (
@@ -76,14 +74,9 @@ func runBlock(cmd *cobra.Command, args []string) {
 func displayBlock(jsonOutput bool) {
 	buf := new(bytes.Buffer)
 
-	options := m.ReaderOptions{}
-
 	if jsonOutput {
-		options.ShouldFormat = true
-		options.Style = styles.Get("native")
 		fmt.Fprintln(buf, block.AsJSON())
 	} else {
-		options.ShouldFormat = false
 		fmt.Fprintln(buf, "Number:           ", block.Number)
 		fmt.Fprintf(buf, "HASH:              '%s'\n", block.HASH)
 		fmt.Fprintln(buf, "Time Start:       ", time.Unix(block.TimeStart, 0))
@@ -142,21 +135,10 @@ func displayBlock(jsonOutput bool) {
 		}
 	}
 
-	reader, err := m.NewReaderFromStream(
-		fmt.Sprintf("Block: %d", block.Number),
-		buf,
-		formatters.TTY,
-		options,
-	)
-	if err != nil {
-		fmt.Printf("%v\n", err)
-		os.Exit(1)
-	}
-
-	pager := m.NewPager(reader)
-	pager.WrapLongLines = true
-
-	err = pager.Page()
+	err := moor.PageFromStream(buf, moor.Options{
+		Title:         fmt.Sprintf("Block: %d", block.Number),
+		WrapLongLines: true,
+	})
 	if err != nil {
 		fmt.Printf("%v\n", err)
 		os.Exit(1)

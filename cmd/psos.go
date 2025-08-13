@@ -6,10 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/alecthomas/chroma/v2/formatters"
-	"github.com/alecthomas/chroma/v2/styles"
 	"github.com/spf13/cobra"
-	"github.com/walles/moar/m"
+	"github.com/walles/moor/v2/pkg/moor"
 
 	"github.com/Friends-Of-Noso/NosoData-Go/legacy"
 )
@@ -66,14 +64,9 @@ func runPSOS(cmd *cobra.Command, args []string) {
 func displayPSO(jsonOutput bool) {
 	buf := new(bytes.Buffer)
 
-	options := m.ReaderOptions{}
-
 	if jsonOutput {
-		options.ShouldFormat = true
-		options.Style = styles.Get("native")
 		fmt.Fprintln(buf, pso.AsJSON())
 	} else {
-		options.ShouldFormat = false
 		fmt.Fprintln(buf, "Block:", pso.Block)
 		fmt.Fprintf(buf, "  MN Locks(%d):\n", pso.MNLockCount)
 		for i, mli := range pso.MNLocks {
@@ -84,21 +77,10 @@ func displayPSO(jsonOutput bool) {
 		fmt.Fprintf(buf, "  PSO Count(%d):\n", pso.PSOCount)
 	}
 
-	reader, err := m.NewReaderFromStream(
-		"PSO",
-		buf,
-		formatters.TTY,
-		options,
-	)
-	if err != nil {
-		fmt.Printf("%v\n", err)
-		os.Exit(1)
-	}
-
-	pager := m.NewPager(reader)
-	pager.WrapLongLines = true
-
-	err = pager.Page()
+	err := moor.PageFromStream(buf, moor.Options{
+		Title:         "PSO",
+		WrapLongLines: true,
+	})
 	if err != nil {
 		fmt.Printf("%v\n", err)
 		os.Exit(1)
