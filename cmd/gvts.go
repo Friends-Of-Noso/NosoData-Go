@@ -6,10 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/alecthomas/chroma/v2/formatters"
-	"github.com/alecthomas/chroma/v2/styles"
 	"github.com/spf13/cobra"
-	"github.com/walles/moar/m"
+	"github.com/walles/moor/v2/pkg/moor"
 
 	"github.com/Friends-Of-Noso/NosoData-Go/legacy"
 )
@@ -66,14 +64,9 @@ func runGVTS(cmd *cobra.Command, args []string) {
 func displayGVTS(jsonOutput bool) {
 	buf := new(bytes.Buffer)
 
-	options := m.ReaderOptions{}
-
 	if jsonOutput {
-		options.ShouldFormat = true
-		options.Style = styles.Get("native")
 		fmt.Fprintln(buf, gvts.AsJSON())
 	} else {
-		options.ShouldFormat = false
 		for i, e := range gvts.Entries {
 			fmt.Fprintln(buf, "Position:", i)
 			fmt.Fprintf(buf, "    Number:  '%s'\n", e.Number.GetString())
@@ -83,21 +76,10 @@ func displayGVTS(jsonOutput bool) {
 		}
 	}
 
-	reader, err := m.NewReaderFromStream(
-		"GVTS",
-		buf,
-		formatters.TTY,
-		options,
-	)
-	if err != nil {
-		fmt.Printf("%v\n", err)
-		os.Exit(1)
-	}
-
-	pager := m.NewPager(reader)
-	pager.WrapLongLines = true
-
-	err = pager.Page()
+	err := moor.PageFromStream(buf, moor.Options{
+		Title:         "GVTS",
+		WrapLongLines: true,
+	})
 	if err != nil {
 		fmt.Printf("%v\n", err)
 		os.Exit(1)

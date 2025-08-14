@@ -3,13 +3,13 @@ module github.com/Friends-Of-Noso/NosoData-Go
 go 1.24.4
 
 require (
-	github.com/alecthomas/chroma/v2 v2.18.1-0.20250607032210-6ffb4659a458
 	github.com/spf13/cobra v1.9.1
-	github.com/walles/moar v1.32.3
+	github.com/walles/moor/v2 v2.0.3
 	gotest.tools/v3 v3.3.0
 )
 
 require (
+	github.com/alecthomas/chroma/v2 v2.19.1-0.20250723141813-02ff9d482061 // indirect
 	github.com/dlclark/regexp2 v1.11.5 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
